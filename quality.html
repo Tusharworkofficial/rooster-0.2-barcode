@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Pro - Quality</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #EFF2F7;
+            color: #0F1828;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background-color: #0F1828;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1030;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FFFFFF !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand i {
+            margin-right: 10px;
+            color: #C61B37;
+            font-size: 1.8rem;
+        }
+
+        .nav-link {
+            color: #FFFFFF !important;
+            font-weight: 400;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #C61B37 !important;
+        }
+
+        .quality-container {
+            margin-top: 100px;
+            padding: 20px;
+        }
+
+        .card {
+            background: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .table-responsive {
+            margin-top: 25px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            background: #FFFFFF;
+        }
+
+        .table thead th {
+            background-color: #0F1828;
+            color: #FFFFFF;
+            border: none;
+            padding: 15px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .table tbody tr:hover {
+            background-color: #C61B37;
+            color: #FFFFFF;
+        }
+
+        .btn-custom {
+            background-color: #C61B37;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 700;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #A3152D;
+            color: #FFFFFF;
+        }
+
+        canvas {
+            max-height: 300px;
+        }
+
+        footer {
+            background-color: #0F1828;
+            color: #FFFFFF;
+            padding: 3rem 2rem;
+            margin-top: 50px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        footer .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        footer .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        footer .footer-brand i {
+            margin-right: 10px;
+            color: #C61B37;
+            font-size: 1.8rem;
+        }
+
+        footer .footer-links,
+        footer .footer-contact {
+            flex: 1;
+            min-width: 200px;
+            margin: 0 1rem;
+        }
+
+        footer h5 {
+            color: #FFFFFF;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        footer a {
+            color: #FFFFFF;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.75rem;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #C61B37;
+        }
+
+        footer .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="index.html"><i class="fas fa-box-open"></i> Inventory Pro</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#generate">Generate</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#scan">Scan</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#inventory">Inventory</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#notifications">Notifications</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#reports">Reports</a></li>
+                <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="quality.html">Quality</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Quality Content -->
+    <div class="container quality-container">
+        <h2 class="text-center mb-4">Quality Control Management</h2>
+
+        <!-- Batch QC Rules -->
+        <div class="card">
+            <h3>Batch-Specific QC Rules</h3>
+            <form id="qc-rules-form" class="mt-4">
+                <div class="form-group">
+                    <label>Batch Number</label>
+                    <input type="text" class="form-control" id="qc_batch_number" required>
+                </div>
+                <div class="form-group">
+                    <label>Rule (e.g., Weight: 500mg ± 5%)</label>
+                    <input type="text" class="form-control" id="qc_rule" required>
+                </div>
+                <div class="form-group">
+                    <label>User Role</label>
+                    <select class="form-control" id="qc_role" required>
+                        <option value="QC Staff">QC Staff</option>
+                        <option value="Operator">Operator</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-custom">Save Rule</button>
+            </form>
+        </div>
+
+        <!-- Quality Checklist Templates -->
+        <div class="card">
+            <h3>Quality Checklist Templates</h3>
+            <form id="checklist-form" class="mt-4">
+                <div class="form-group">
+                    <label>Template Name (e.g., OSD Tablet Check)</label>
+                    <input type="text" class="form-control" id="checklist_name" required>
+                </div>
+                <div class="form-group">
+                    <label>Checklist Items (comma-separated)</label>
+                    <textarea class="form-control" id="checklist_items" placeholder="e.g., Weight OK, Potency OK"
+                        required></textarea>
+                </div>
+                <button type="submit" class="btn btn-custom">Save Template</button>
+            </form>
+        </div>
+
+        <!-- Quality History Log -->
+        <div class="card">
+            <h3>Quality History Log</h3>
+            <div class="form-group">
+                <label>Filter by Date</label>
+                <input type="date" class="form-control" id="filter-date">
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Material ID</th>
+                            <th>Status</th>
+                            <th>Details</th>
+                            <th>Tester</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quality-log"></tbody>
+                </table>
+            </div>
+            <button class="btn btn-custom mt-3" onclick="exportQualityToPDF()">Export to PDF</button>
+            <button class="btn btn-custom mt-3 ml-2" onclick="exportQualityToCSV()">Export to CSV</button>
+        </div>
+
+        <!-- Recurring Issues Analyzer -->
+        <div class="card">
+            <h3>Recurring Issues Analyzer</h3>
+            <div id="recurring-issues" class="mt-3"></div>
+        </div>
+
+        <!-- Real-Time QC Dashboard -->
+        <div class="card">
+            <h3>Real-Time QC Dashboard</h3>
+            <canvas id="quality-trends-chart"></canvas>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <i class="fas fa-box-open"></i> Inventory Pro
+            </div>
+            <div class="footer-links">
+                <h5>Quick Links</h5>
+                <a href="index.html#home">Home</a>
+                <a href="index.html#generate">Generate Barcode & QR</a>
+                <a href="index.html#scan">Scan Barcode</a>
+                <a href="index.html#inventory">Inventory List</a>
+                <a href="index.html#notifications">Notifications</a>
+                <a href="index.html#reports">Reports</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="quality.html">Quality</a>
+            </div>
+            <div class="footer-contact">
+                <h5>Contact Us</h5>
+                <a href="mailto:support@inventorypro.com">support@inventorypro.com</a>
+                <a href="tel:+1234567890">+1 (234) 567-890</a>
+                <a href="#">123 Business St, Tech City</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Inventory Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        let db;
+        const qcRules = {}; // Store batch-specific rules
+        const checklists = {}; // Store checklist templates
+
+        const request = indexedDB.open("inventoryDB", 2);
+        request.onupgradeneeded = function (event) {
+            db = event.target.result;
+            if (!db.objectStoreNames.contains("materials")) {
+                const objectStore = db.createObjectStore("materials", { keyPath: "material_id" });
+                objectStore.createIndex("expiry_date", "expiry_date", { unique: false });
+                objectStore.createIndex("quantity", "quantity", { unique: false });
+            }
+        };
+        request.onsuccess = function (event) {
+            db = event.target.result;
+            loadQualityPage();
+        };
+        request.onerror = function (event) {
+            console.log("Database error: " + event.target.errorCode);
+        };
+
+        function getAllMaterials(callback) {
+            const transaction = db.transaction(["materials"], "readonly");
+            const objectStore = transaction.objectStore("materials");
+            const request = objectStore.getAll();
+            request.onsuccess = () => callback(request.result);
+        }
+
+        function loadQualityPage() {
+            getAllMaterials((materials) => {
+                // Quality History Log
+                const logBody = document.getElementById("quality-log");
+                logBody.innerHTML = "";
+                materials.forEach(material => {
+                    if (material.quality_checks) {
+                        material.quality_checks.forEach(check => {
+                            logBody.innerHTML += `
+                                <tr>
+                                    <td>${material.material_id}</td>
+                                    <td>${check.status}</td>
+                                    <td>${check.details || "N/A"}</td>
+                                    <td>${check.tester}</td>
+                                    <td>${check.timestamp}</td>
+                                </tr>
+                            `;
+                        });
+                    }
+                });
+
+                // Filter by Date
+                document.getElementById("filter-date").addEventListener("change", (e) => {
+                    const filterDate = e.target.value;
+                    logBody.innerHTML = "";
+                    materials.forEach(material => {
+                        if (material.quality_checks) {
+                            material.quality_checks.forEach(check => {
+                                if (!filterDate || check.timestamp.startsWith(filterDate)) {
+                                    logBody.innerHTML += `
+                                        <tr>
+                                            <td>${material.material_id}</td>
+                                            <td>${check.status}</td>
+                                            <td>${check.details || "N/A"}</td>
+                                            <td>${check.tester}</td>
+                                            <td>${check.timestamp}</td>
+                                        </tr>
+                                    `;
+                                }
+                            });
+                        }
+                    });
+                });
+
+                // Recurring Issues Analyzer
+                const recurringIssues = {};
+                materials.forEach(m => {
+                    if (m.quality_checks) {
+                        const fails = m.quality_checks.filter(c => c.status === "Fail").length;
+                        if (fails > 1) recurringIssues[m.material_id] = fails;
+                    }
+                });
+                const issuesDiv = document.getElementById("recurring-issues");
+                issuesDiv.innerHTML = "<h5>Materials with Recurring Fails:</h5>";
+                if (Object.keys(recurringIssues).length === 0) {
+                    issuesDiv.innerHTML += "<p>No recurring issues found.</p>";
+                } else {
+                    for (const [id, count] of Object.entries(recurringIssues)) {
+                        issuesDiv.innerHTML += `<p>${id}: ${count} fails - Consider CAPA action.</p>`;
+                    }
+                }
+
+                // Real-Time QC Dashboard
+                const passCount = materials.flatMap(m => m.quality_checks || []).filter(c => c.status === "Pass").length;
+                const failCount = materials.flatMap(m => m.quality_checks || []).filter(c => c.status === "Fail").length;
+                const qualityChart = new Chart(document.getElementById("quality-trends-chart"), {
+                    type: "bar",
+                    data: {
+                        labels: ["Pass", "Fail"],
+                        datasets: [{
+                            label: "Quality Checks",
+                            data: [passCount, failCount],
+                            backgroundColor: ["#0F1828", "#C61B37"]
+                        }]
+                    },
+                    options: { scales: { y: { beginAtZero: true } }, responsive: true, maintainAspectRatio: false }
+                });
+            });
+        }
+
+        function exportQualityToPDF() {
+            const { jsPDF } = window.jspdf;
+            getAllMaterials((materials) => {
+                const doc = new jsPDF();
+                doc.text("Quality Check Log", 20, 10);
+                doc.autoTable({
+                    startY: 20,
+                    head: [['Material ID', 'Status', 'Details', 'Tester', 'Timestamp']],
+                    body: materials.flatMap(m => (m.quality_checks || []).map(c => [m.material_id, c.status, c.details || "N/A", c.tester, c.timestamp]))
+                });
+                doc.save("quality_log.pdf");
+            });
+        }
+
+        function exportQualityToCSV() {
+            getAllMaterials((materials) => {
+                const csv = materials.flatMap(m => (m.quality_checks || []).map(c => `${m.material_id},${c.status},${c.details || "N/A"},${c.tester},${c.timestamp}`)).join('\n');
+                const csvContent = "data:text/csv;charset=utf-8,Material ID,Status,Details,Tester,Timestamp\n" + csv;
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "quality_log.csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+
+        document.getElementById("qc-rules-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const batchNumber = document.getElementById("qc_batch_number").value;
+            const rule = document.getElementById("qc_rule").value;
+            const role = document.getElementById("qc_role").value;
+            qcRules[batchNumber] = { rule, role, authorized: role !== "Operator" };
+            alert(`QC Rule Saved for Batch ${batchNumber}: ${rule} (Role: ${role})`);
+            document.getElementById("qc-rules-form").reset();
+        });
+
+        document.getElementById("checklist-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name = document.getElementById("checklist_name").value;
+            const items = document.getElementById("checklist_items").value.split(",").map(item => item.trim());
+            checklists[name] = items;
+            alert(`Checklist Template Saved: ${name} with ${items.length} items`);
+            document.getElementById("checklist-form").reset();
+        });
+    </script>
+</body>
+
+</html>
